@@ -1,0 +1,116 @@
+package com.github.duncanmfield.alertmonitoringservice;
+
+import com.github.duncanmfield.alertmonitoringservice.data.AlertCriteria;
+import com.github.duncanmfield.alertmonitoringservice.data.Notification;
+import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaNotificationPublisher;
+import com.github.duncanmfield.alertmonitoringservice.repository.AlertCriteriaRepository;
+import com.github.duncanmfield.alertmonitoringservice.service.TemperatureMonitor;
+import com.github.duncanmfield.alertmonitoringservice.service.scraper.TemperatureScraper;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.io.IOException;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
+@SpringBootTest
+public class TemperatureMonitorTest {
+
+    @MockBean
+    private AlertCriteriaRepository alertCriteriaRepository;
+    @MockBean
+    private TemperatureScraper temperatureScraper;
+    @MockBean
+    private KafkaNotificationPublisher notificationPublisher;
+
+    @Autowired
+    private TemperatureMonitor temperatureMonitor;
+
+    @Test
+    public void shouldNotPublishNotificationWhenNoCriteriaIsSet() throws IOException {
+        // Given
+        given(alertCriteriaRepository.getAll()).willReturn(Set.of());
+        given(temperatureScraper.lookUp(any())).willReturn(10.0);
+
+        // When
+        temperatureMonitor.executeMonitorTask();
+
+        // Then
+        verifyNoInteractions(notificationPublisher);
+    }
+
+    @Test
+    public void shouldNotPublishNotificationWhenTemperatureIsBelowThreshold() throws IOException {
+        // Given
+        AlertCriteria mockCriteria = mock(AlertCriteria.class);
+        given(alertCriteriaRepository.getAll()).willReturn(Set.of(mockCriteria));
+        given(temperatureScraper.lookUp(any())).willReturn(10.0);
+        given(mockCriteria.getTemperature()).willReturn(11.0);
+
+        // When
+        temperatureMonitor.executeMonitorTask();
+
+        // Then
+        verifyNoInteractions(notificationPublisher);
+    }
+
+    @Test
+    public void shouldPublishNotificationWhenTemperatureEqualsThreshold() throws IOException {
+        // Given
+        AlertCriteria mockCriteria = mock(AlertCriteria.class);
+        given(alertCriteriaRepository.getAll()).willReturn(Set.of(mockCriteria));
+        given(temperatureScraper.lookUp(any())).willReturn(10.0);
+        given(mockCriteria.getTemperature()).willReturn(10.0);
+        ArgumentCaptor<Notification> notificationArgumentCaptor = ArgumentCaptor.forClass(Notification.class);
+
+        // When
+        temperatureMonitor.executeMonitorTask();
+
+        // Then
+        verify(notificationPublisher).publish(notificationArgumentCaptor.capture());
+        assertThat(notificationArgumentCaptor.getValue().getActualTemperature()).isEqualTo(10.0);
+        assertThat(notificationArgumentCaptor.getValue().getAlertTemperature()).isEqualTo(10.0);
+    }
+
+    @Test
+    public void shouldPublishNotificationWhenTemperatureIsAboveThreshold() throws IOException {
+        // Given
+        AlertCriteria mockCriteria = mock(AlertCriteria.class);
+        given(alertCriteriaRepository.getAll()).willReturn(Set.of(mockCriteria));
+        given(temperatureScraper.lookUp(any())).willReturn(10.0);
+        given(mockCriteria.getTemperature()).willReturn(9.0);
+        ArgumentCaptor<Notification> notificationArgumentCaptor = ArgumentCaptor.forClass(Notification.class);
+
+        // When
+        temperatureMonitor.executeMonitorTask();
+
+        // Then
+        verify(notificationPublisher).publish(notificationArgumentCaptor.capture());
+        assertThat(notificationArgumentCaptor.getValue().getActualTemperature()).isEqualTo(10.0);
+        assertThat(notificationArgumentCaptor.getValue().getAlertTemperature()).isEqualTo(9.0);
+    }
+
+    @Test
+    public void shouldPublishTwoNotificationWhenTwoThresholdsAreMet() throws IOException {
+        // Given
+        AlertCriteria mockCriteriaA = mock(AlertCriteria.class);
+        AlertCriteria mockCriteriaB = mock(AlertCriteria.class);
+        given(alertCriteriaRepository.getAll()).willReturn(Set.of(mockCriteriaA, mockCriteriaB));
+        given(temperatureScraper.lookUp(any())).willReturn(10.0);
+        given(mockCriteriaA.getTemperature()).willReturn(9.0);
+        given(mockCriteriaB.getTemperature()).willReturn(9.0);
+
+        // When
+        temperatureMonitor.executeMonitorTask();
+
+        // Then
+        verify(notificationPublisher, times(2)).publish(any(Notification.class));
+    }
+}
