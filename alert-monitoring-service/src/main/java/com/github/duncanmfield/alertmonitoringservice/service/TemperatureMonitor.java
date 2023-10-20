@@ -5,6 +5,8 @@ import com.github.duncanmfield.alertmonitoringservice.data.Notification;
 import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaNotificationPublisher;
 import com.github.duncanmfield.alertmonitoringservice.repository.AlertCriteriaRepository;
 import com.github.duncanmfield.alertmonitoringservice.service.scraper.TemperatureScraper;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,16 +18,12 @@ import java.io.IOException;
  * any alert criteria are met.
  */
 @Service
+@RequiredArgsConstructor
 public class TemperatureMonitor {
 
-    @Autowired
-    private AlertCriteriaRepository alertCriteriaRepository;
-
-    @Autowired
-    private TemperatureScraper temperatureScraper;
-
-    @Autowired
-    private KafkaNotificationPublisher notificationPublisher;
+    private final AlertCriteriaRepository alertCriteriaRepository;
+    private final TemperatureScraper temperatureScraper;
+    private final KafkaNotificationPublisher notificationPublisher;
 
     @Scheduled(fixedRateString = "${temperature.rate.ms}")
     public void executeMonitorTask() {

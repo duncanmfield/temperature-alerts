@@ -6,11 +6,13 @@ import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaNotificationPub
 import com.github.duncanmfield.alertmonitoringservice.repository.AlertCriteriaRepository;
 import com.github.duncanmfield.alertmonitoringservice.service.TemperatureMonitor;
 import com.github.duncanmfield.alertmonitoringservice.service.scraper.TemperatureScraper;
-import org.junit.jupiter.api.Test;
+import jakarta.annotation.Resource;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.util.Set;
@@ -20,24 +22,23 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 public class TemperatureMonitorTest {
 
-    @MockBean
+    @Mock
     private AlertCriteriaRepository alertCriteriaRepository;
-    @MockBean
+    @Mock
     private TemperatureScraper temperatureScraper;
-    @MockBean
+    @Mock
     private KafkaNotificationPublisher notificationPublisher;
 
-    @Autowired
+    @InjectMocks
     private TemperatureMonitor temperatureMonitor;
 
     @Test
     public void shouldNotPublishNotificationWhenNoCriteriaIsSet() throws IOException {
         // Given
         given(alertCriteriaRepository.getAll()).willReturn(Set.of());
-        given(temperatureScraper.lookUp(any())).willReturn(10.0);
 
         // When
         temperatureMonitor.executeMonitorTask();
