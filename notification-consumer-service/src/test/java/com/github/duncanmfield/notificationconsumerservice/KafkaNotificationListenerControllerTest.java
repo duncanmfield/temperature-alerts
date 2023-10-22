@@ -31,7 +31,7 @@ public class KafkaNotificationListenerControllerTest {
     private KafkaNotificationListenerController kafkaNotificationListenerController;
 
     @Test
-    public void shouldCallOutputServiceWhenListenerValidNotificationIsSent() throws IOException {
+    public void shouldCallOutputServiceWhenValidNotificationIsSent() throws IOException {
         // Given
         Notification notification = mock(Notification.class);
         given(notification.getActualTemperature()).willReturn(45.0);
