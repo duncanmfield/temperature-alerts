@@ -26,7 +26,7 @@ public class TemperatureMonitor {
     private final KafkaNotificationPublisher notificationPublisher;
 
     @Scheduled(fixedRateString = "${temperature.rate.ms}")
-    public void executeMonitorTask() {
+    public void executeMonitorTask() throws IOException {
         for (AlertCriteria alertCriteria : alertCriteriaRepository.getAll()) {
             try {
                 double actualTemperature = temperatureScraper.lookup(alertCriteria);
@@ -35,6 +35,7 @@ public class TemperatureMonitor {
                 }
             } catch (IOException e) {
                 log.error("Lookup failed for alert criteria {}", alertCriteria, e);
+                throw e;
             }
         }
     }

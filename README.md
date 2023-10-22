@@ -1,6 +1,6 @@
 # temperature-alerts
 
-[![build](https://github.com/duncanmfield/temperature-alerts/actions/workflows/maven.yml/badge.svg)](https://github.com/duncanmfield/temperature-alerts/actions/workflows/maven.yml?)
+[![Build](https://github.com/duncanmfield/temperature-alerts/actions/workflows/maven.yml/badge.svg)](https://github.com/duncanmfield/temperature-alerts/actions/workflows/maven.yml?)
 ![Coverage](.github/badges/jacoco.svg?)
 ![Branches](.github/badges/branches.svg?) 
 

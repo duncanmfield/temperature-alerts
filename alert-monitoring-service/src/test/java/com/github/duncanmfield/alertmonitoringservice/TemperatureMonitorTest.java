@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -35,7 +36,7 @@ public class TemperatureMonitorTest {
     private TemperatureMonitor temperatureMonitor;
 
     @Test
-    public void shouldNotPublishNotificationWhenNoCriteriaIsSet() {
+    public void shouldNotPublishNotificationWhenNoCriteriaIsSet() throws IOException {
         // Given
         given(alertCriteriaRepository.getAll()).willReturn(Set.of());
 
@@ -112,5 +113,16 @@ public class TemperatureMonitorTest {
 
         // Then
         verify(notificationPublisher, times(2)).publish(any(Notification.class));
+    }
+
+    @Test
+    public void shouldThrowIoExceptionWhenLookupFails() throws IOException {
+        // Given
+        AlertCriteria mockCriteria = mock(AlertCriteria.class);
+        given(alertCriteriaRepository.getAll()).willReturn(Set.of(mockCriteria));
+        given(temperatureScraper.lookup(any())).willThrow(IOException.class);
+
+        // When / Then
+        assertThrows(IOException.class, () -> temperatureMonitor.executeMonitorTask());
     }
 }
