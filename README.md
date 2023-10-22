@@ -5,12 +5,12 @@ This is a proof-of-concept demonstrating setting up alerts for when temperature 
 The following example demonstrates setting up an alert for Bath being above 10°C.
 Once deployed, alert criteria may be set up by running `./demo-scripts/create-alert-bath.sh`, or the following curl command:
 ```
-curl --silent --location 'localhost:8080/alert' \
+curl --silent --location 'localhost:8080/alerts' \
 --header 'Content-Type: application/json' \
 --data '{
     "description": "Bath",
     "latitude": 51.3781,
-    "longitude": 2.3597,
+    "longitude": -2.3597,
     "temperature": 10
 }'
 ```

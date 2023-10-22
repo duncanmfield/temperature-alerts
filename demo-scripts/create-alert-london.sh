@@ -1,4 +1,4 @@
-curl --silent --location 'localhost:8080/alert' \
+curl --silent --location 'localhost:8080/alerts' \
 --header 'Content-Type: application/json' \
 --data '{
     "description": "London",

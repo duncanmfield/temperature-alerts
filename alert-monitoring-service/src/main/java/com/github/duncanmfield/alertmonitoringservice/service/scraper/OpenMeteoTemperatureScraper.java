@@ -1,8 +1,8 @@
 package com.github.duncanmfield.alertmonitoringservice.service.scraper;
 
 import com.github.duncanmfield.alertmonitoringservice.data.AlertCriteria;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -13,19 +13,17 @@ import java.io.IOException;
  * Example request: curl "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m"
  */
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class OpenMeteoTemperatureScraper implements TemperatureScraper {
 
-    @Autowired
-    private @Qualifier("open-meteo") WebClient client;
-
-    public OpenMeteoTemperatureScraper(WebClient client) {
-        this.client = client;
-    }
+    private final WebClient client;
 
     @Override
-    public double lookUp(AlertCriteria alertCriteria) throws IOException {
+    public double lookup(AlertCriteria alertCriteria) throws IOException {
+        OpenMeteoResponse result;
         try {
-            OpenMeteoResponse result = client.get().uri(uriBuilder ->
+            result = client.get().uri(uriBuilder ->
                             uriBuilder.path("/v1/forecast")
                                     .queryParam("latitude", "{latitude}")
                                     .queryParam("longitude", "{longitude}")
@@ -35,13 +33,15 @@ public class OpenMeteoTemperatureScraper implements TemperatureScraper {
                     .retrieve()
                     .bodyToMono(OpenMeteoResponse.class)
                     .block();
-
-            if (result == null || result.getCurrent() == null) {
-                throw new IOException("Invalid response from OpenMeteo API call");
-            }
-            return result.getCurrent().getTemperature_2m();
         } catch (Exception e) {
-            throw new IOException("Network error during OpenMeteo API call");
+            throw new IOException("Error processing OpenMeteo API call");
         }
+
+        if (result == null || result.getCurrent() == null) {
+            throw new IOException("Invalid response from OpenMeteo API call");
+        }
+
+        return result.getCurrent().getTemperature_2m();
+
     }
 }

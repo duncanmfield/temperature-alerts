@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 /**
- * Controller exposing the /alert endpoint.
+ * Controller exposing the /alerts endpoint.
  */
 @RestController
-@RequestMapping("/alert")
+@RequestMapping("/alerts")
 @RequiredArgsConstructor
 @Slf4j
 public class AlertCriteriaController {

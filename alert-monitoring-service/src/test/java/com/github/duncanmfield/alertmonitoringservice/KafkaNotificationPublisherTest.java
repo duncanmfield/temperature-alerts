@@ -5,33 +5,37 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.duncanmfield.alertmonitoringservice.data.Notification;
 import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaConfig;
 import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaNotificationPublisher;
+import kafka.utils.Json;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class KafkaNotificationPublisherTest {
 
-    @MockBean
+    @Mock
     private KafkaConfig kafkaConfig;
-
-    @MockBean
+    @Mock
     private KafkaTemplate<String, String> kafkaTemplate;
+    @Spy
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Autowired
+    @InjectMocks
     private KafkaNotificationPublisher kafkaNotificationPublisher;
 
     @Test
     public void shouldSendNotificationToKafkaTemplate() throws JsonProcessingException {
         // Given
         Notification notification = mock(Notification.class);
-        String notificationAsString = serialize(notification);
+        String notificationAsString = objectMapper.writeValueAsString(notification);
         NewTopic mockTopic = mock(NewTopic.class);
         given(kafkaConfig.notificationTopic()).willReturn(mockTopic);
         given(mockTopic.name()).willReturn("notification");
@@ -41,9 +45,5 @@ public class KafkaNotificationPublisherTest {
 
         // Then
         verify(kafkaTemplate).send(eq("notification"), eq(notificationAsString));
-    }
-
-    private String serialize(Notification notification) throws JsonProcessingException {
-       return new ObjectMapper().writeValueAsString(notification);
     }
 }

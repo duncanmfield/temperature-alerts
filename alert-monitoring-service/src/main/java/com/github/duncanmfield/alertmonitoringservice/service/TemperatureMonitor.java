@@ -5,9 +5,8 @@ import com.github.duncanmfield.alertmonitoringservice.data.Notification;
 import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaNotificationPublisher;
 import com.github.duncanmfield.alertmonitoringservice.repository.AlertCriteriaRepository;
 import com.github.duncanmfield.alertmonitoringservice.service.scraper.TemperatureScraper;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,7 @@ import java.io.IOException;
  * any alert criteria are met.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class TemperatureMonitor {
 
@@ -29,13 +29,12 @@ public class TemperatureMonitor {
     public void executeMonitorTask() {
         for (AlertCriteria alertCriteria : alertCriteriaRepository.getAll()) {
             try {
-                double actualTemperature = temperatureScraper.lookUp(alertCriteria);
+                double actualTemperature = temperatureScraper.lookup(alertCriteria);
                 if (actualTemperature >= alertCriteria.getTemperature()) {
                     notificationPublisher.publish(new Notification(alertCriteria, actualTemperature));
                 }
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Look up failed for alert criteria: " + alertCriteria);
+                log.error("Lookup failed for alert criteria {}", alertCriteria, e);
             }
         }
     }

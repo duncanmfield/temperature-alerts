@@ -12,8 +12,8 @@ public interface TemperatureScraper {
     /**
      * Returns the temperature at the latitude and longitude of the provided {@link AlertCriteria}
      *
-     * @param alert The alert criteria object.
+     * @param alertCriteria The alert criteria object.
      * @return The temperature, in degrees celsius.
      */
-    double lookUp(AlertCriteria alert) throws IOException;
+    double lookup(AlertCriteria alertCriteria) throws IOException;
 }

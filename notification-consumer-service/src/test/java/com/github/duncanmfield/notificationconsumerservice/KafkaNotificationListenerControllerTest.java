@@ -1,15 +1,16 @@
 package com.github.duncanmfield.notificationconsumerservice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.duncanmfield.notificationconsumerservice.data.Notification;
 import com.github.duncanmfield.notificationconsumerservice.kafka.KafkaNotificationListenerController;
 import com.github.duncanmfield.notificationconsumerservice.output.OutputService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
@@ -18,13 +19,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class KafkaNotificationListenerControllerTest {
 
-    @MockBean
+    @Mock
     private OutputService outputService;
+    @Spy
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Autowired
+    @InjectMocks
     private KafkaNotificationListenerController kafkaNotificationListenerController;
 
     @Test
@@ -32,7 +35,7 @@ public class KafkaNotificationListenerControllerTest {
         // Given
         Notification notification = mock(Notification.class);
         given(notification.getActualTemperature()).willReturn(45.0);
-        String notificationAsString = serialize(notification);
+        String notificationAsString = objectMapper.writeValueAsString(notification);
         ArgumentCaptor<Notification> notificationArgumentCaptor = ArgumentCaptor.forClass(Notification.class);
 
         // When
@@ -59,9 +62,5 @@ public class KafkaNotificationListenerControllerTest {
 
         // When / Then
         assertThrows(IOException.class, () -> kafkaNotificationListenerController.listener(malformedNotification));
-    }
-
-    private String serialize(Notification notification) throws JsonProcessingException {
-       return new ObjectMapper().writeValueAsString(notification);
     }
 }

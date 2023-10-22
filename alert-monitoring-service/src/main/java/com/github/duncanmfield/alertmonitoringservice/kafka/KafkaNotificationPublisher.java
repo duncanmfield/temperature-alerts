@@ -3,7 +3,8 @@ package com.github.duncanmfield.alertmonitoringservice.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.duncanmfield.alertmonitoringservice.data.Notification;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,15 +12,13 @@ import org.springframework.stereotype.Service;
  * Publishes to Kafka's notification topic.
  */
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class KafkaNotificationPublisher {
 
-    @Autowired
-    private KafkaConfig kafkaConfig;
-
-    @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
-
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private final KafkaConfig kafkaConfig;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper mapper;
 
     /**
      * Publishes notifications to Kafka.
@@ -31,7 +30,7 @@ public class KafkaNotificationPublisher {
             String notificationJson = mapper.writeValueAsString(notification);
             kafkaTemplate.send(kafkaConfig.notificationTopic().name(), notificationJson);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("Failed to publish notification {}", notification, e);
             throw new RuntimeException(e);
         }
     }

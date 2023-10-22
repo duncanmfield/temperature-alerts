@@ -8,9 +8,10 @@ import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
@@ -20,11 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class OpenMeteoTemperatureScraperIT {
 
     private static MockWebServer mockWebServer;
-
     private static OpenMeteoTemperatureScraper openMeteoTemperatureScraper;
 
     @BeforeAll
@@ -54,7 +54,7 @@ public class OpenMeteoTemperatureScraperIT {
         given(alertCriteria.getLongitude()).willReturn(50.0);
 
         // When
-        openMeteoTemperatureScraper.lookUp(alertCriteria);
+        openMeteoTemperatureScraper.lookup(alertCriteria);
 
         // Then
         RecordedRequest recordedRequest = mockWebServer.takeRequest();
@@ -74,7 +74,7 @@ public class OpenMeteoTemperatureScraperIT {
         given(alertCriteria.getLatitude()).willReturn(10.0);
 
         // When
-        double result = openMeteoTemperatureScraper.lookUp(alertCriteria);
+        double result = openMeteoTemperatureScraper.lookup(alertCriteria);
 
         // Then
         assertThat(result).isEqualTo(123.0);
@@ -92,7 +92,7 @@ public class OpenMeteoTemperatureScraperIT {
         given(alertCriteria.getLatitude()).willReturn(10.0);
 
         // When / Then
-        assertThrows(IOException.class, () -> openMeteoTemperatureScraper.lookUp(alertCriteria));
+        assertThrows(IOException.class, () -> openMeteoTemperatureScraper.lookup(alertCriteria));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class OpenMeteoTemperatureScraperIT {
         given(alertCriteria.getLatitude()).willReturn(10.0);
 
         // When / Then
-        assertThrows(IOException.class, () -> openMeteoTemperatureScraper.lookUp(alertCriteria));
+        assertThrows(IOException.class, () -> openMeteoTemperatureScraper.lookup(alertCriteria));
     }
 
     @Test
@@ -119,6 +119,6 @@ public class OpenMeteoTemperatureScraperIT {
         given(alertCriteria.getLongitude()).willReturn(50.0);
 
         // When / Then
-        assertThrows(IOException.class, () -> openMeteoTemperatureScraper.lookUp(alertCriteria));
+        assertThrows(IOException.class, () -> openMeteoTemperatureScraper.lookup(alertCriteria));
     }
 }
