@@ -5,7 +5,9 @@ import com.github.duncanmfield.alertmonitoringservice.service.AlertCriteriaServi
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -22,10 +24,10 @@ public class AlertCriteriaController {
     private final AlertCriteriaService alertCriteriaService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public boolean createAlertCriteria(@RequestBody @Valid AlertCriteria alertCriteriaRequest) {
-        log.info("Creating alert criteria " + alertCriteriaRequest);
+    public ResponseEntity<AlertCriteria> createAlertCriteria(@RequestBody @Valid AlertCriteria alertCriteriaRequest) {
+        log.info("Creating alert criteria {}", alertCriteriaRequest);
         alertCriteriaService.handle(alertCriteriaRequest);
-        return true;
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

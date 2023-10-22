@@ -29,11 +29,11 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, String> producerFactory(){
+    public ProducerFactory<String, String> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
-    private Map<String, Object> producerConfig(){
+    private Map<String, Object> producerConfig() {
         Map<String, Object> properties = new HashMap<>();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -42,7 +42,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic notificationTopic(){
+    public NewTopic notificationTopic() {
         return TopicBuilder.name("notification").build();
     }
 }
