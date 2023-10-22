@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.duncanmfield.alertmonitoringservice.data.Notification;
 import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaConfig;
 import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaNotificationPublisher;
-import kafka.utils.Json;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

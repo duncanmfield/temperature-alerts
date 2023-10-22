@@ -1,6 +1,8 @@
 # temperature-alerts
 
 [![Java CI with Maven](https://github.com/duncanmfield/temperature-alerts/actions/workflows/maven.yml/badge.svg)](https://github.com/duncanmfield/temperature-alerts/actions/workflows/maven.yml)
+![Coverage](.github/badges/jacoco.svg)
+![Branches](.github/badges/branches.svg) 
 
 This is a proof-of-concept demonstrating setting up alerts for when temperature thresholds are exceeded at specific co-ordinates.
 

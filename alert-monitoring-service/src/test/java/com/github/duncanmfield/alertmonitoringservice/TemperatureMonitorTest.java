@@ -8,13 +8,10 @@ import com.github.duncanmfield.alertmonitoringservice.service.TemperatureMonitor
 import com.github.duncanmfield.alertmonitoringservice.service.scraper.TemperatureScraper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.util.Set;

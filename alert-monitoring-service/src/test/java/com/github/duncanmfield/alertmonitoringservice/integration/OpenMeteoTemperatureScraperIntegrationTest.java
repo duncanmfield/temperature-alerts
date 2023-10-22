@@ -22,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-public class OpenMeteoTemperatureScraperIT {
+public class OpenMeteoTemperatureScraperIntegrationTest {
 
     private static MockWebServer mockWebServer;
     private static OpenMeteoTemperatureScraper openMeteoTemperatureScraper;
