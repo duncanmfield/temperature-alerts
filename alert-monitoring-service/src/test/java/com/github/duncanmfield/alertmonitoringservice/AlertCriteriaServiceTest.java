@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,11 +35,41 @@ public class AlertCriteriaServiceTest {
     }
 
     @Test
+    public void shouldReadFromRepositoryWhenGetByIdCalled() {
+        // When
+        alertCriteriaService.getById(1);
+
+        // Then
+        verify(alertCriteriaRepository).findById(1L);
+    }
+
+    @Test
     public void shouldReadFromRepositoryWhenGetAllCalled() {
         // When
         alertCriteriaService.getAll();
 
         // Then
         verify(alertCriteriaRepository).findAll();
+    }
+
+    @Test
+    public void shouldDeleteFromRepositoryWhenDeleteCalledAndIdExists() {
+        // Given
+        given(alertCriteriaRepository.existsById(1L)).willReturn(true);
+
+        // When
+        alertCriteriaService.handleDelete(1);
+
+        // Then
+        verify(alertCriteriaRepository).deleteById(1L);
+    }
+
+    @Test
+    public void shouldDeleteFromRepositoryWhenDeleteCalledAndIdDoesNotExist() {
+        // Given
+        given(alertCriteriaRepository.existsById(1L)).willReturn(false);
+
+        // When / Then
+        assertThat(alertCriteriaService.handleDelete(1)).isEqualTo(false);
     }
 }

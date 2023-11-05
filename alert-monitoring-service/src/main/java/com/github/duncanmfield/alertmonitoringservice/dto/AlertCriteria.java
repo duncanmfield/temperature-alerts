@@ -1,20 +1,21 @@
 package com.github.duncanmfield.alertmonitoringservice.dto;
 
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Service layer representation of an alert criteria.
+ * Internal representation of an alert criteria.
  */
 @Data
-@Document("alertCriteria")
+@Entity
 @RequiredArgsConstructor
+@Table(name = "alerts")
 public class AlertCriteria {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
 
     private String description;
     private double latitude;

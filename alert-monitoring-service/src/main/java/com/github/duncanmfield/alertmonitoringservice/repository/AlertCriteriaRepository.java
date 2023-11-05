@@ -1,10 +1,10 @@
 package com.github.duncanmfield.alertmonitoringservice.repository;
 
 import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteria;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Defines the contract for communication with MongoDB for storing {@link AlertCriteria} instances.
+ * Defines the contract for communication with a database for storing {@link AlertCriteria} instances.
  */
-public interface AlertCriteriaRepository extends MongoRepository<AlertCriteria, String> {
+public interface AlertCriteriaRepository extends JpaRepository<AlertCriteria, Long> {
 }

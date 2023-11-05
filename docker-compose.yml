@@ -37,13 +37,13 @@ services:
     depends_on:
       - zoo
 
-  mongo:
-    image: mongo
-    hostname: mongo
-    container_name: mongo
+  db:
+    image: mysql:5.7
+    hostname: db
+    container_name: db
+    restart: unless-stopped
     ports:
-      - "27017:27017"
-    restart: always
-    logging:
-      options:
-        max-size: 1g
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "db"
+      MYSQL_ROOT_PASSWORD: "password"

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller exposing the /alerts endpoint.
@@ -28,15 +29,34 @@ public class AlertCriteriaController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AlertCriteriaView> createAlertCriteria(@RequestBody @Valid AlertCriteriaView alertCriteriaRequest) {
         log.info("Creating alert criteria {}", alertCriteriaRequest);
-        alertCriteriaService.handleCreate(mapper.toDto(alertCriteriaRequest));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        AlertCriteriaView response = mapper.toView(alertCriteriaService.handleCreate(mapper.toDto(alertCriteriaRequest)));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AlertCriteriaView> getAllAlertCriteria() {
+    public ResponseEntity<List<AlertCriteriaView>> getAllAlertCriteria() {
         log.info("Retrieving all alert criteria");
-        return alertCriteriaService.getAll()
+        List<AlertCriteriaView> result = alertCriteriaService.getAll()
                 .stream()
                 .map(mapper::toView).toList();
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AlertCriteriaView> getAlertCriteria(@PathVariable long id) {
+        log.info("Retrieving alert criteria with id {}", id);
+        Optional<AlertCriteriaView> result = alertCriteriaService.getById(id).map(mapper::toView);
+        return result
+                .map(view -> new ResponseEntity<>(view, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<AlertCriteriaView> deleteAlertCriteria(@PathVariable long id) {
+        log.info("Deleting alert criteria with id {}", id);
+        if (alertCriteriaService.handleDelete(id)) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.GONE);
     }
 }

@@ -19,6 +19,7 @@ public class AlertCriteriaMapper {
      */
     public AlertCriteria toDto(AlertCriteriaView view) {
         AlertCriteria dto = new AlertCriteria();
+        dto.setId(view.getId());
         dto.setDescription(view.getDescription());
         dto.setLatitude(view.getLatitude());
         dto.setLongitude(view.getLongitude());
@@ -34,6 +35,7 @@ public class AlertCriteriaMapper {
      */
     public AlertCriteriaView toView(AlertCriteria dto) {
         AlertCriteriaView view = new AlertCriteriaView();
+        view.setId(dto.getId());
         view.setDescription(dto.getDescription());
         view.setLatitude(dto.getLatitude());
         view.setLongitude(dto.getLongitude());

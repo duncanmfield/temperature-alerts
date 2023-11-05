@@ -2,12 +2,15 @@ package com.github.duncanmfield.alertmonitoringservice.controller.request;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 
 /**
  * Presentation layer representation of an alert criteria.
  */
 @Data
 public class AlertCriteriaView {
+
+    private long id;
 
     @NotNull
     @NotEmpty
