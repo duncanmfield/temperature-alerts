@@ -1,7 +1,7 @@
 package com.github.duncanmfield.alertmonitoringservice;
 
-import com.github.duncanmfield.alertmonitoringservice.data.AlertCriteria;
-import com.github.duncanmfield.alertmonitoringservice.data.Notification;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteria;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteriaNotification;
 import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaNotificationPublisher;
 import com.github.duncanmfield.alertmonitoringservice.repository.AlertCriteriaRepository;
 import com.github.duncanmfield.alertmonitoringservice.service.TemperatureMonitor;
@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,7 +38,7 @@ public class TemperatureMonitorTest {
     @Test
     public void shouldNotPublishNotificationWhenNoCriteriaIsSet() throws IOException {
         // Given
-        given(alertCriteriaRepository.getAll()).willReturn(Set.of());
+        given(alertCriteriaRepository.findAll()).willReturn(List.of());
 
         // When
         temperatureMonitor.executeMonitorTask();
@@ -51,7 +51,7 @@ public class TemperatureMonitorTest {
     public void shouldNotPublishNotificationWhenTemperatureIsBelowThreshold() throws IOException {
         // Given
         AlertCriteria mockCriteria = mock(AlertCriteria.class);
-        given(alertCriteriaRepository.getAll()).willReturn(Set.of(mockCriteria));
+        given(alertCriteriaRepository.findAll()).willReturn(List.of(mockCriteria));
         given(temperatureScraper.lookup(any())).willReturn(10.0);
         given(mockCriteria.getTemperature()).willReturn(11.0);
 
@@ -66,10 +66,10 @@ public class TemperatureMonitorTest {
     public void shouldPublishNotificationWhenTemperatureEqualsThreshold() throws IOException {
         // Given
         AlertCriteria mockCriteria = mock(AlertCriteria.class);
-        given(alertCriteriaRepository.getAll()).willReturn(Set.of(mockCriteria));
+        given(alertCriteriaRepository.findAll()).willReturn(List.of(mockCriteria));
         given(temperatureScraper.lookup(any())).willReturn(10.0);
         given(mockCriteria.getTemperature()).willReturn(10.0);
-        ArgumentCaptor<Notification> notificationArgumentCaptor = ArgumentCaptor.forClass(Notification.class);
+        ArgumentCaptor<AlertCriteriaNotification> notificationArgumentCaptor = ArgumentCaptor.forClass(AlertCriteriaNotification.class);
 
         // When
         temperatureMonitor.executeMonitorTask();
@@ -84,10 +84,10 @@ public class TemperatureMonitorTest {
     public void shouldPublishNotificationWhenTemperatureIsAboveThreshold() throws IOException {
         // Given
         AlertCriteria mockCriteria = mock(AlertCriteria.class);
-        given(alertCriteriaRepository.getAll()).willReturn(Set.of(mockCriteria));
+        given(alertCriteriaRepository.findAll()).willReturn(List.of(mockCriteria));
         given(temperatureScraper.lookup(any())).willReturn(10.0);
         given(mockCriteria.getTemperature()).willReturn(9.0);
-        ArgumentCaptor<Notification> notificationArgumentCaptor = ArgumentCaptor.forClass(Notification.class);
+        ArgumentCaptor<AlertCriteriaNotification> notificationArgumentCaptor = ArgumentCaptor.forClass(AlertCriteriaNotification.class);
 
         // When
         temperatureMonitor.executeMonitorTask();
@@ -103,7 +103,7 @@ public class TemperatureMonitorTest {
         // Given
         AlertCriteria mockCriteriaA = mock(AlertCriteria.class);
         AlertCriteria mockCriteriaB = mock(AlertCriteria.class);
-        given(alertCriteriaRepository.getAll()).willReturn(Set.of(mockCriteriaA, mockCriteriaB));
+        given(alertCriteriaRepository.findAll()).willReturn(List.of(mockCriteriaA, mockCriteriaB));
         given(temperatureScraper.lookup(any())).willReturn(10.0);
         given(mockCriteriaA.getTemperature()).willReturn(9.0);
         given(mockCriteriaB.getTemperature()).willReturn(9.0);
@@ -112,14 +112,14 @@ public class TemperatureMonitorTest {
         temperatureMonitor.executeMonitorTask();
 
         // Then
-        verify(notificationPublisher, times(2)).publish(any(Notification.class));
+        verify(notificationPublisher, times(2)).publish(any(AlertCriteriaNotification.class));
     }
 
     @Test
     public void shouldThrowIoExceptionWhenLookupFails() throws IOException {
         // Given
         AlertCriteria mockCriteria = mock(AlertCriteria.class);
-        given(alertCriteriaRepository.getAll()).willReturn(Set.of(mockCriteria));
+        given(alertCriteriaRepository.findAll()).willReturn(List.of(mockCriteria));
         given(temperatureScraper.lookup(any())).willThrow(IOException.class);
 
         // When / Then

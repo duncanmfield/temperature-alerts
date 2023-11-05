@@ -2,7 +2,7 @@ package com.github.duncanmfield.alertmonitoringservice.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.duncanmfield.alertmonitoringservice.data.Notification;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteriaNotification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -25,7 +25,7 @@ public class KafkaNotificationPublisher {
      *
      * @param notification The notification to publish.
      */
-    public void publish(Notification notification) {
+    public void publish(AlertCriteriaNotification notification) {
         try {
             String notificationJson = mapper.writeValueAsString(notification);
             kafkaTemplate.send(kafkaConfig.notificationTopic().name(), notificationJson);

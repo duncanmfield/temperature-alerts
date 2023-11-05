@@ -1,6 +1,6 @@
 package com.github.duncanmfield.alertmonitoringservice.integration;
 
-import com.github.duncanmfield.alertmonitoringservice.data.AlertCriteria;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteria;
 import com.github.duncanmfield.alertmonitoringservice.service.scraper.OpenMeteoTemperatureScraper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;

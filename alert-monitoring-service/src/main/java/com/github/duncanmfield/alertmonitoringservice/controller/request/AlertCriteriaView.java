@@ -1,13 +1,13 @@
-package com.github.duncanmfield.alertmonitoringservice.data;
+package com.github.duncanmfield.alertmonitoringservice.controller.request;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 /**
- * Data representation of alert criteria.
+ * Presentation layer representation of an alert criteria.
  */
 @Data
-public class AlertCriteria {
+public class AlertCriteriaView {
 
     @NotNull
     @NotEmpty

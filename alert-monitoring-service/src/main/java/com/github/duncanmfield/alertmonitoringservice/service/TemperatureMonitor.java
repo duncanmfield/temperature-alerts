@@ -1,7 +1,7 @@
 package com.github.duncanmfield.alertmonitoringservice.service;
 
-import com.github.duncanmfield.alertmonitoringservice.data.AlertCriteria;
-import com.github.duncanmfield.alertmonitoringservice.data.Notification;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteria;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteriaNotification;
 import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaNotificationPublisher;
 import com.github.duncanmfield.alertmonitoringservice.repository.AlertCriteriaRepository;
 import com.github.duncanmfield.alertmonitoringservice.service.scraper.TemperatureScraper;
@@ -27,11 +27,11 @@ public class TemperatureMonitor {
 
     @Scheduled(fixedRateString = "${temperature.rate.ms}")
     public void executeMonitorTask() throws IOException {
-        for (AlertCriteria alertCriteria : alertCriteriaRepository.getAll()) {
+        for (AlertCriteria alertCriteria : alertCriteriaRepository.findAll()) {
             try {
                 double actualTemperature = temperatureScraper.lookup(alertCriteria);
                 if (actualTemperature >= alertCriteria.getTemperature()) {
-                    notificationPublisher.publish(new Notification(alertCriteria, actualTemperature));
+                    notificationPublisher.publish(new AlertCriteriaNotification(alertCriteria, actualTemperature));
                 }
             } catch (IOException e) {
                 log.error("Lookup failed for alert criteria {}", alertCriteria, e);

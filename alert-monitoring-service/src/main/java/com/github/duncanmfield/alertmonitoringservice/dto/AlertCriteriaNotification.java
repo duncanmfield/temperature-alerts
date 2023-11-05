@@ -1,13 +1,14 @@
-package com.github.duncanmfield.alertmonitoringservice.data;
+package com.github.duncanmfield.alertmonitoringservice.dto;
 
+import com.github.duncanmfield.alertmonitoringservice.controller.request.AlertCriteriaView;
 import lombok.Data;
 
 /**
- * Data representation of a notification which is produced when the corresponding {@link AlertCriteria} is satisfied.
+ * Representation of a notification which is produced when the corresponding {@link AlertCriteria} is satisfied.
  * Contains necessary information from the alert criteria, as well as the temperature which satisfied it.
  */
 @Data
-public class Notification {
+public class AlertCriteriaNotification {
 
     private String description;
     private double latitude;
@@ -21,7 +22,7 @@ public class Notification {
      * @param alertCriteria The alert criteria which was satisfied.
      * @param actualTemperature The actual temperature, which satisfied the alert criteria.
      */
-    public Notification(AlertCriteria alertCriteria, double actualTemperature) {
+    public AlertCriteriaNotification(AlertCriteria alertCriteria, double actualTemperature) {
         this.description = alertCriteria.getDescription();
         this.latitude = alertCriteria.getLatitude();
         this.longitude = alertCriteria.getLongitude();

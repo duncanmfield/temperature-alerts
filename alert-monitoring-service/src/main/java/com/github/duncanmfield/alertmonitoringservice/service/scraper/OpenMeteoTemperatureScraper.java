@@ -1,6 +1,6 @@
 package com.github.duncanmfield.alertmonitoringservice.service.scraper;
 
-import com.github.duncanmfield.alertmonitoringservice.data.AlertCriteria;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import java.io.IOException;
 
 /**
  * Handles scraping of temperature data from OpenMeteo API.
- * Example request: curl "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m"
+ * Example request: {@code curl "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m"}
  */
 @Service
 @Slf4j

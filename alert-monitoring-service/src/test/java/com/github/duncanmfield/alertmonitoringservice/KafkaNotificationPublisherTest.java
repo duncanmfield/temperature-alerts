@@ -2,7 +2,7 @@ package com.github.duncanmfield.alertmonitoringservice;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.duncanmfield.alertmonitoringservice.data.Notification;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteriaNotification;
 import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaConfig;
 import com.github.duncanmfield.alertmonitoringservice.kafka.KafkaNotificationPublisher;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -14,6 +14,7 @@ import org.mockito.Spy;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -33,7 +34,7 @@ public class KafkaNotificationPublisherTest {
     @Test
     public void shouldSendNotificationToKafkaTemplate() throws JsonProcessingException {
         // Given
-        Notification notification = mock(Notification.class);
+        AlertCriteriaNotification notification = mock(AlertCriteriaNotification.class);
         String notificationAsString = objectMapper.writeValueAsString(notification);
         NewTopic mockTopic = mock(NewTopic.class);
         given(kafkaConfig.notificationTopic()).willReturn(mockTopic);
@@ -44,5 +45,18 @@ public class KafkaNotificationPublisherTest {
 
         // Then
         verify(kafkaTemplate).send(eq("notification"), eq(notificationAsString));
+    }
+
+    @Test
+    public void shouldThrowRuntimeExceptionWhenNotificationIsInvalid() throws Exception {
+        // Given
+        AlertCriteriaNotification notification = mock(AlertCriteriaNotification.class);
+        NewTopic mockTopic = mock(NewTopic.class);
+        given(kafkaConfig.notificationTopic()).willReturn(mockTopic);
+        given(mockTopic.name()).willReturn("notification");
+        given(objectMapper.writeValueAsString(any())).willThrow(JsonProcessingException.class);
+
+        // When / Then
+        assertThrows(RuntimeException.class, () -> kafkaNotificationPublisher.publish(notification));
     }
 }

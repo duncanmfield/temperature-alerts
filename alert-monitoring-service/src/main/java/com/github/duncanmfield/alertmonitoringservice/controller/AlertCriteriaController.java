@@ -1,6 +1,7 @@
 package com.github.duncanmfield.alertmonitoringservice.controller;
 
-import com.github.duncanmfield.alertmonitoringservice.data.AlertCriteria;
+import com.github.duncanmfield.alertmonitoringservice.controller.request.AlertCriteriaView;
+import com.github.duncanmfield.alertmonitoringservice.dto.mapper.AlertCriteriaMapper;
 import com.github.duncanmfield.alertmonitoringservice.service.AlertCriteriaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Controller exposing the /alerts endpoint.
@@ -21,18 +22,21 @@ import java.util.Set;
 @Slf4j
 public class AlertCriteriaController {
 
+    private final AlertCriteriaMapper mapper;
     private final AlertCriteriaService alertCriteriaService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AlertCriteria> createAlertCriteria(@RequestBody @Valid AlertCriteria alertCriteriaRequest) {
+    public ResponseEntity<AlertCriteriaView> createAlertCriteria(@RequestBody @Valid AlertCriteriaView alertCriteriaRequest) {
         log.info("Creating alert criteria {}", alertCriteriaRequest);
-        alertCriteriaService.handle(alertCriteriaRequest);
+        alertCriteriaService.handleCreate(mapper.toDto(alertCriteriaRequest));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<AlertCriteria> getAllAlertCriteria() {
+    public List<AlertCriteriaView> getAllAlertCriteria() {
         log.info("Retrieving all alert criteria");
-        return alertCriteriaService.getAll();
+        return alertCriteriaService.getAll()
+                .stream()
+                .map(mapper::toView).toList();
     }
 }

@@ -1,7 +1,7 @@
 package com.github.duncanmfield.alertmonitoringservice;
 
-import com.github.duncanmfield.alertmonitoringservice.data.AlertCriteria;
-import com.github.duncanmfield.alertmonitoringservice.repository.DummyAlertCriteriaRepository;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteria;
+import com.github.duncanmfield.alertmonitoringservice.repository.AlertCriteriaRepository;
 import com.github.duncanmfield.alertmonitoringservice.service.AlertCriteriaService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 public class AlertCriteriaServiceTest {
 
     @Mock
-    private DummyAlertCriteriaRepository alertCriteriaRepository;
+    private AlertCriteriaRepository alertCriteriaRepository;
 
     @InjectMocks
     private AlertCriteriaService alertCriteriaService;
@@ -26,7 +26,7 @@ public class AlertCriteriaServiceTest {
         AlertCriteria alertCriteria = mock(AlertCriteria.class);
 
         // When
-        alertCriteriaService.handle(alertCriteria);
+        alertCriteriaService.handleCreate(alertCriteria);
 
         // Then
         verify(alertCriteriaRepository).save(alertCriteria);
@@ -38,6 +38,6 @@ public class AlertCriteriaServiceTest {
         alertCriteriaService.getAll();
 
         // Then
-        verify(alertCriteriaRepository).getAll();
+        verify(alertCriteriaRepository).findAll();
     }
 }

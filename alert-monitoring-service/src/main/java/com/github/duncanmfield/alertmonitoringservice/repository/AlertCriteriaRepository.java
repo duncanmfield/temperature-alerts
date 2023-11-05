@@ -1,25 +1,10 @@
 package com.github.duncanmfield.alertmonitoringservice.repository;
 
-import com.github.duncanmfield.alertmonitoringservice.data.AlertCriteria;
-
-import java.util.Set;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteria;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
- * Defines the contract for any repositories storing {@link AlertCriteria}.
+ * Defines the contract for communication with MongoDB for storing {@link AlertCriteria} instances.
  */
-public interface AlertCriteriaRepository {
-
-    /**
-     * Saves the provided {@link AlertCriteria} instance.
-     *
-     * @param alert The alert criteria to save.
-     */
-    void save(AlertCriteria alert);
-
-    /**
-     * Returns all {@link AlertCriteria} in the repository.
-     *
-     * @return All alert criteria.
-     */
-    Set<AlertCriteria> getAll();
+public interface AlertCriteriaRepository extends MongoRepository<AlertCriteria, String> {
 }

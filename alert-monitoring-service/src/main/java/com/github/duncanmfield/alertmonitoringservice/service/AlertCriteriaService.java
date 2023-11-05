@@ -1,14 +1,14 @@
 package com.github.duncanmfield.alertmonitoringservice.service;
 
-import com.github.duncanmfield.alertmonitoringservice.data.AlertCriteria;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteria;
 import com.github.duncanmfield.alertmonitoringservice.repository.AlertCriteriaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 
 /**
- * Service layer for requests pertaining to {@link AlertCriteria} instances.
+ * Service layer for handling of alert criteria.
  */
 @Service
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class AlertCriteriaService {
      *
      * @param alertCriteria The alert criteria.
      */
-    public void handle(AlertCriteria alertCriteria) {
+    public void handleCreate(AlertCriteria alertCriteria) {
         alertCriteriaRepository.save(alertCriteria);
     }
 
@@ -30,7 +30,7 @@ public class AlertCriteriaService {
      *
      * @return All alert criteria instances.
      */
-    public Set<AlertCriteria> getAll() {
-        return alertCriteriaRepository.getAll();
+    public List<AlertCriteria> getAll() {
+        return alertCriteriaRepository.findAll();
     }
 }

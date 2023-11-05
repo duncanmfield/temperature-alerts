@@ -1,6 +1,6 @@
 package com.github.duncanmfield.alertmonitoringservice.service.scraper;
 
-import com.github.duncanmfield.alertmonitoringservice.data.AlertCriteria;
+import com.github.duncanmfield.alertmonitoringservice.dto.AlertCriteria;
 
 import java.io.IOException;
 
