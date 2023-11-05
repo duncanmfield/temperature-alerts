@@ -29,11 +29,11 @@ The notification-consumer-service listens to Kafka's notification topic, and sim
 1. Docker installed, and docker daemon running
 
 ### Deploy:
-1. Launch Kafka and MongoDB containers: `docker-compose up -d`
+1. Launch Kafka and MySQL containers: `docker-compose up -d`
 2. Launch notification-consumer-service `cd notification-consumer-service && ./mvnw spring-boot:run`
 3. Launch alert-monitoring-service `cd alert-monitoring-service && ./mvnw spring-boot:run`
 
 ### Stop:
 1. Ctrl+C terminal running alert-monitoring-service
 2. Ctrl+C terminal running notification-consumer-service
-3. Stop Kafka and MongoDB container: `docker-compose down`
+3. Stop Kafka and MySQL container: `docker-compose down`
